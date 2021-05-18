@@ -14,6 +14,10 @@ class Posts extends CI_Controller{
     }
 
     public function view($slug = NULL){
+
+        if(!$this->session->userdata('logged_in')){
+            redirect('users/login');
+    }
       
         $data['post'] = $this->post_model->get_posts($slug);
 
@@ -33,6 +37,11 @@ class Posts extends CI_Controller{
     }
 
     public function create(){
+
+        if(!$this->session->userdata('logged_in')){
+                redirect('users/login');
+        }
+
         $data['title'] = 'create at';
 
         $data['categories'] = $this->post_model->get_categories();
@@ -64,6 +73,8 @@ class Posts extends CI_Controller{
             }
 
             $this->post_model->create_post($post_image);
+
+            $this->session->set_flashdata('post_created', 'you have succesfully created a post');
             redirect('posts');
         }
         
@@ -71,15 +82,27 @@ class Posts extends CI_Controller{
 
     public function delete($id){
             //echo $id ;
-
+            if(!$this->session->userdata('logged_in')){
+                redirect('users/login');
+        }
             $this->post_model->delete_post($id);
+            $this->session->set_flashdata('post_deleted', 'you have deleted a post');
+           
             redirect('posts');
     }
 
     public function edit($slug){
+        if(!$this->session->userdata('logged_in')){
+            redirect('users/login');
+    }
         
         $data['post'] = $this->post_model->get_posts($slug);
        // print_r($data);
+
+     if($this->session->userdata('user_id') != $this->post_model->get_posts($slug)['user_id']){
+         redirect('posts');
+     }
+
        $data['categories'] = $this->post_model->get_categories();
 
        if(empty($data['post'])){
@@ -93,8 +116,15 @@ class Posts extends CI_Controller{
     }
 
     public function update(){
+
+        if(!$this->session->userdata('logged_in')){
+            redirect('users/login');
+    }
         //echo "submit" ;
         $this->post_model->update_post();
+
+        $this->session->set_flashdata('post_updated', 'you have updated a post');
+           
         redirect('posts');
     }
 }

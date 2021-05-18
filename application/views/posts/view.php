@@ -7,12 +7,11 @@
 </div>
 
 <hr>
-
+<?php if($this->session->userdata('user_id') == $post['user_id']) :?>
 <a class="btn btn-primary pull-left" href="edit/<?php echo $post['slug']; ?>" > Edit </a> 
 
-<?php echo form_open('/posts/delete/'.$post['id']); ?>
-<input type="submit" class="btn btn-danger" value="Delete" /> 
-<?php echo form_close(); ?>
+<?php echo form_open('/posts/delete/'.$post['id']); ?><input type="submit" class="btn btn-danger" value="Delete" /> <?php echo form_close(); ?>
+<?php endif ; ?>
 <hr> 
 <h3> Comments </h3>
 <?php if($comments) : ?>

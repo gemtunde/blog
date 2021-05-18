@@ -3,6 +3,9 @@
 class Categories extends CI_Controller {
 
          public function index(){
+            if(!$this->session->userdata('logged_in')){
+                redirect('users/login');
+        }
             $data['title'] = 'Category';
 
             $data['categories'] = $this->category_model->get_categories();
@@ -14,7 +17,9 @@ class Categories extends CI_Controller {
          }
 
         public function create(){
-
+            if(!$this->session->userdata('logged_in')){
+                redirect('users/login');
+        }
             $data['title'] = 'Create Category';
 
             $this->form_validation->set_rules('name', 'Name', 'required');
@@ -25,12 +30,18 @@ class Categories extends CI_Controller {
                 $this->load->view('templates/footer');
             }else{
                 $this->category_model->create_category();
+                $this->session->set_flashdata('category_created', 'you have succesfully created a category');
+           
                 redirect('categories');
 
             }
         }
 
         public function posts($id){
+
+            if(!$this->session->userdata('logged_in')){
+                redirect('users/login');
+        }
 
             $data['title'] = $this->category_model->get_category($id)->name ;
 
